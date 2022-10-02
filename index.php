@@ -1,6 +1,16 @@
 <?php
 error_reporting(-1);
 ini_set('display_errors','On');
+
+$username = "asmus";
+$password = "asmus";
+$dsn = "mysql:host=mariadb;dbname=shop;charset=utf8mb4";
+$db = new PDO($dsn,$username,$password);
+
+$sql = "SELECT id,title,description,price FROM products";
+
+$result = $db->query($sql);
+
 ?>
 
 <!DOCTYPE html>
@@ -19,20 +29,12 @@ ini_set('display_errors','On');
 </header>
 <section class="container" id="content">
     <div class="row">
-        <div class="col">
-            <?php include 'card.php'?>
-        </div>
-        <div class="col">
-            <?php include 'card.php'?>
-        </div>
-        <div class="col">
-            <?php include 'card.php'?>
-        </div>
-        <div class="col">
-            <?php include 'card.php'?>
-        </div>
+        <?php while ($row = $result->fetch()):?>
+            <div class="col">
+                <?php include 'card.php'?>
+            </div>
+        <?php endwhile;?>
     </div>
-
 </section>
 <script src="assets/js/bootstrap.bundle.js"></script>
 </body>
