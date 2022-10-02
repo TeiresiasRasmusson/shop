@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="f4fbe182-fb62-4162-b665-a13d7ede60a7" name="docker codeserver" url="http://localhost">
+        <fileTransfer rootFolder="/var/www/html" accessType="SFTP" host="localhost" port="22" sshConfigId="1f5d17e0-fcba-40f2-bd58-8f5631ee4767" sshConfig="ssh@localhost:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
