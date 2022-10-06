@@ -3,8 +3,8 @@
 <head>
     <title>Kitten Webshop</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="./assets/css/bootstrap.css">
-    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
 <header class="bg-light p-5 rounded-lg m-3">
@@ -21,6 +21,6 @@
         <?php endwhile;?>
     </div>
 </section>
-<script src="./assets/js/bootstrap.bundle.js"></script>
+<script src="assets/js/bootstrap.bundle.js"></script>
 </body>
 </html>
