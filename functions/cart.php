@@ -23,3 +23,23 @@ function countProductsInCart (int $userId){
     $cartItems = $cartResults->fetchColumn();
     return $cartItems;
 }
+
+function getCartItemsForUserId(int $userId):array{
+
+    $sql = "SELECT product_id,  title, description, price
+        FROM cart 
+        JOIN products ON(cart.product_id = products.id)
+        WHERE user_id =".$userId;
+    $cartResults = getDB()->query($sql);
+
+    if($cartResults === false){
+        return [];
+    }
+    $found = [];
+
+    while ($products = $cartResults->fetch()){
+        $found[] = $products;
+    }
+
+    return $found;
+}
