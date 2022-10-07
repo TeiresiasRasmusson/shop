@@ -33,6 +33,7 @@ if(strpos($route,'/cart/add/') !== false){
 if(strpos($route,'/cart') !== false){
 
     $cartItems = getCartItemsForUserId($userId);
+    $cartSum = getCartSumForUserId($userId);
     require __DIR__.'/templates/cartPage.php';
     exit();
 }
