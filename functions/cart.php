@@ -2,12 +2,14 @@
 
 function addProductToCart (int $userId, int $productId){
 
-    $sql = "INSERT INTO cart SET user_id = :userId, product_id = :productId";
+    $sql = "INSERT INTO cart 
+        SET user_id = :userId, product_id = :productId, quantity = 1
+        ON DUPLICATE KEY UPDATE quantity = quantity + 1";
     $statement = getDB()->prepare($sql);
 
     $statement->execute([
-        ':userId'=>$userId,
-        ':productId'=>$productId
+        ':userId' => $userId,
+        ':productId' => $productId
     ]);
 }
 
@@ -42,4 +44,18 @@ function getCartItemsForUserId(int $userId):array{
     }
 
     return $found;
+}
+
+function getCartSumForUserId(int $userId): int{
+
+    $sql = "SELECT SUM(price * cart.quantity)
+        FROM cart 
+        JOIN products ON(cart.product_id = products.id)
+        WHERE user_id =".$userId;
+    $cartResults = getDB()->query($sql);
+    if($cartResults === false){
+        return 0;
+    }
+    return (int)$cartResults->fetchColumn();
+
 }
