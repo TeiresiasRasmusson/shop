@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-title"><?= $product['title'] ?></div>
-    <img src="https://placekitten.com/286/180?image=<?= $product['id'] ?>" class="card-img-top" alt="Produktbild-<?= $product['id'] ?>">
+    <img src="https://placekitten.com/306/192?image=<?= $product['id'] ?>" class="card-img-top" alt="Produktbild-<?= $product['id'] ?>">
     <div class="card-body">
         <p><?= $product['description'] ?></p>
         <hr>
