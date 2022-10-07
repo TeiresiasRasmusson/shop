@@ -8,18 +8,18 @@
 </head>
 <body>
 <?php include __DIR__.'/navbar.php'?>
-<header class="bg-light p-5 rounded-lg m-3">
+<header class="bg-light pt-5 pb-5">
     <div class="container">
         <h1>Willkommen im Kitten Webshop</h1>
     </div>
 </header>
 <section class="container" id="content">
     <div class="row">
-        <?php while ($row = $result->fetch()):?>
+        <?php foreach($products as $product):?>
             <div class="col">
                 <?php include 'card.php' ?>
             </div>
-        <?php endwhile;?>
+        <?php endforeach;?>
     </div>
 </section>
 <script src="assets/js/bootstrap.bundle.js"></script>
