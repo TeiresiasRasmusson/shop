@@ -6,6 +6,8 @@ $route = str_replace('index.php','', $route);
 
 if(strpos($route,'/cart/add/') !== false){
     $routeParts = explode('/',$route);
+
+    $userId = getCurrentUserId();
     $productId = (int) $routeParts[3];
 
     addProductToCart($userId, $productId);
