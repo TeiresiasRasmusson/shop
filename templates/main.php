@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
     <title>Kitten Webshop</title>
+    <base href="<?= $baseUrl ?>">
     <meta charset="utf-8">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/styles.css">
@@ -13,7 +14,7 @@
         <h1>Willkommen im Kitten Webshop</h1>
     </div>
 </header>
-<section class="container" id="content">
+<section class="container" id="produtcs">
     <div class="row">
         <?php foreach($products as $product):?>
             <div class="col">
