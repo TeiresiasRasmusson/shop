@@ -7,13 +7,15 @@ function addProductToCart (int $userId, int $productId){
         ON DUPLICATE KEY UPDATE quantity = quantity + 1";
     $statement = getDB()->prepare($sql);
 
-    $statement->execute([
+    $statement->execute(
+        [
         ':userId' => $userId,
         ':productId' => $productId
-    ]);
+        ]
+    );
 }
 
-function countProductsInCart (int $userId){
+function countProductsInCart (int $userId): int{
 
     $sql = "SELECT COUNT(id) FROM cart WHERE user_id =".$userId;
     $cartResults = getDB()->query($sql);
@@ -23,10 +25,11 @@ function countProductsInCart (int $userId){
     }
 
     $cartItems = $cartResults->fetchColumn();
+
     return $cartItems;
 }
 
-function getCartItemsForUserId(int $userId):array{
+function getCartItemsForUserId(int $userId): array{
 
     $sql = "SELECT product_id,  title, description, price
         FROM cart 
@@ -56,6 +59,25 @@ function getCartSumForUserId(int $userId): int{
     if($cartResults === false){
         return 0;
     }
-    return (int)$cartResults->fetchColumn();
 
+    return (int)$cartResults->fetchColumn();
+}
+
+function moveCartProductsToAnotherUser(int $sourceUserId, int $targetUserId){
+
+    $sql = "UPDATE shop.cart 
+            SET user_id = :targetUserId 
+            WHERE user_id = :sourceUserId";
+    $statement = getDB()->prepare($sql);
+
+    if(false === $statement){
+        return 0;
+    }
+
+    $statement->execute(
+        [
+        ':sourceUserId' => $sourceUserId,
+        ':targetUserId' => $targetUserId
+        ]
+    );
 }
