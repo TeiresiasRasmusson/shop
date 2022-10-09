@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var array $cartItem
+ */
+?>
+
 <div class="col-3">
     <img class="productPicture" src="https://placekitten.com/306/192?image=<?= $cartItem['product_id'] ?>" class="card-img-top" alt="Produktbild-<?= $cartItem['product_id'] ?>">
 </div>
