@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var string $baseUrl
+ * @var array $cartItems
+ * @var int $countCartItems
+ * @var int $cartSum
+ */
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -34,7 +43,7 @@
         </div>
     </div>
     <div class="row">
-        <a class="btn btn-primary col-12" href="#">Zur Kasse gehen</a>
+        <a href="index.php/checkout" class="btn btn-primary col-12">Zur Kasse gehen</a>
     </div>
 </section>
 <script src="assets/js/bootstrap.bundle.js"></script>
