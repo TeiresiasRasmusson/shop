@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var string $baseUrl
+ * @var array $products
+ */
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -9,12 +16,12 @@
 </head>
 <body>
 <?php include __DIR__.'/navbar.php'?>
-<header class="bg-light pt-5 pb-5">
+<header class="bg-light pt-5 pb-5 mb-4">
     <div class="container">
         <h1>Willkommen im Kitten Webshop</h1>
     </div>
 </header>
-<section class="container" id="produtcs">
+<section class="container" id="products">
     <div class="row">
         <?php foreach($products as $product):?>
             <div class="col">
