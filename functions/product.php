@@ -1,6 +1,6 @@
 <?php
 
-function getAllProducts(){
+function getAllProducts(): array{
 
     $sql = "SELECT id, title, description, price FROM products";
 
