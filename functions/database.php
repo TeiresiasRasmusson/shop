@@ -1,6 +1,6 @@
 <?php
 
-function getDB(){
+function getDB(): PDO{
 
     static $db;
     if ($db instanceof PDO){
