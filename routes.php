@@ -1,9 +1,17 @@
 <?php
 $url = $_SERVER['REQUEST_URI'];
 $indexPHPPositionInUrl = strpos($url,'index.php');
-$baseUrl = substr($url, 0, $indexPHPPositionInUrl);
+$baseUrl = $url;
+if(false !== $indexPHPPositionInUrl){
+    $baseUrl = substr($url, 0, $indexPHPPositionInUrl);
+}
 
-$route =  0;
+if(substr($baseUrl, -1) !== '/'){
+    $baseUrl .='/';
+}
+
+$route =  null;
+$_SESSION['redirectTarget'] = $baseUrl.'index.php';
 
 if(false !== $indexPHPPositionInUrl){
 
@@ -12,6 +20,7 @@ if(false !== $indexPHPPositionInUrl){
 }
 
 $userId = getCurrentUserId();
+setcookie('userId', $userId, strtotime('+30 days'),$baseUrl);
 $countCartItems = countProductsInCart($userId);
 
 if(!$route){
@@ -71,12 +80,10 @@ if(strpos($route, '/login') !== false){
 
         if(0 === count($errors)){
             $_SESSION['userId'] = (int)$userData['id'];
-            $redirectTarget = $baseUrl.'index.php';
-            if(isset($_SESSION['redirectTarget'])){
-                $redirectTarget = $_SESSION['redirectTarget'];
-            }
+            moveCartProductsToAnotherUser($_COOKIE['userId'], (int)$userData['id']);
+            setcookie('userId', $userId, strtotime('+30 days'),$baseUrl);
 
-            header("Location: ".$redirectTarget);
+            header("Location: ".$_SESSION['redirectTarget']);
             exit();
         }
     }
@@ -96,3 +103,13 @@ if(strpos($route, '/checkout') !== false) {
 
     exit();
 }
+
+if(strpos($route, '/logout') !== false) {
+
+    session_regenerate_id(true);
+    session_destroy();
+    header("Location: ".$_SESSION['redirectTarget']);
+    exit;
+}
+
+$_SESSION['redirectTarget'] = $baseUrl.'index.php/'.$route;
