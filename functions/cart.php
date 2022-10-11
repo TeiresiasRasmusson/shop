@@ -1,16 +1,17 @@
 <?php
 
-function addProductToCart (int $userId, int $productId){
+function addProductToCart (int $userId, int $productId, int $quantity = 1){
 
     $sql = "INSERT INTO cart 
-        SET user_id = :userId, product_id = :productId, quantity = 1
-        ON DUPLICATE KEY UPDATE quantity = quantity + 1";
+        SET user_id = :userId, product_id = :productId, quantity = :quantity
+        ON DUPLICATE KEY UPDATE quantity = quantity + :quantity";
     $statement = getDB()->prepare($sql);
 
     $statement->execute(
         [
         ':userId' => $userId,
-        ':productId' => $productId
+        ':productId' => $productId,
+        ':quantity' => $quantity
         ]
     );
 }
@@ -29,9 +30,9 @@ function countProductsInCart (int $userId): int{
     return $cartItems;
 }
 
-function getCartItemsForUserId(int $userId): array{
+function getCartItemsForUserId (int $userId): array{
 
-    $sql = "SELECT product_id,  title, description, price
+    $sql = "SELECT product_id,  title, description, price, quantity
         FROM cart 
         JOIN products ON(cart.product_id = products.id)
         WHERE user_id =".$userId;
@@ -49,7 +50,7 @@ function getCartItemsForUserId(int $userId): array{
     return $found;
 }
 
-function getCartSumForUserId(int $userId): int{
+function getCartSumForUserId (int $userId): int{
 
     $sql = "SELECT SUM(price * cart.quantity)
         FROM cart 
@@ -63,21 +64,37 @@ function getCartSumForUserId(int $userId): int{
     return (int)$cartResults->fetchColumn();
 }
 
-function moveCartProductsToAnotherUser(int $sourceUserId, int $targetUserId){
+function deleteProductInCartForUserId (int $userId, int $productId): int {
 
-    $sql = "UPDATE shop.cart 
-            SET user_id = :targetUserId 
-            WHERE user_id = :sourceUserId";
+    $sql = "DELETE FROM cart
+            WHERE user_id = :userId
+            AND product_id = :productId";
+
     $statement = getDB()->prepare($sql);
-
     if(false === $statement){
         return 0;
     }
-
-    $statement->execute(
+    return $statement->execute(
         [
-        ':sourceUserId' => $sourceUserId,
-        ':targetUserId' => $targetUserId
+            ':userId' => $userId,
+            ':productId' => $productId
         ]
     );
+}
+
+function moveCartProductsToAnotherUser (int $sourceUserId, int $targetUserId): int{
+
+    $oldCartItems = getCartItemsForUserId($sourceUserId);
+
+    if(count($oldCartItems) === 0) {
+        return 0;
+    }
+    $movedProducts = 0;
+
+    foreach($oldCartItems as $oldCartItem){
+        addProductToCart($targetUserId, (int)$oldCartItem['product_id'], (int)$oldCartItem['quantity']);
+        $movedProducts += deleteProductInCartForUserId($sourceUserId, (int)$oldCartItem['product_id']);
+    }
+
+    return $movedProducts;
 }
