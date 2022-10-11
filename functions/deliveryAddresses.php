@@ -27,3 +27,50 @@ function saveDeliveryAddressForUser (int $userId, string $recipient, string $str
 
     return (int)getDB()->lastInsertId();
 }
+
+function getDeliveryAddressesForUser(int $userId): array {
+
+    $sql = "SELECT id, recipient, street, streetNumber, city, zipCode
+            FROM delivery_addresses 
+            WHERE user_id = :userId";
+
+    $statement = getDB()->prepare($sql);
+    if(false === $statement){
+        return [];
+    }
+
+    $addresses = [];
+
+    $statement->execute(
+        [
+            ':userId' => $userId
+        ]
+    );
+
+    while($row = $statement->fetch()){
+        $addresses[] = $row;
+    }
+
+    return $addresses;
+}
+
+function deliveryAddressBelongToUser (int $deliveryAddressId, int $userId): bool {
+
+    $sql = "SELECT id
+            FROM delivery_addresses 
+            WHERE user_id = :userId AND id = :deliveryAddressId";
+
+    $statement = getDB()->prepare($sql);
+    if(false === $statement){
+        return false;
+    }
+
+    $statement->execute(
+        [
+            ':userId' => $userId,
+            ':deliveryAddressId' => $deliveryAddressId
+        ]
+    );
+
+    return (bool)$statement->rowCount();
+}
