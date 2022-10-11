@@ -79,6 +79,7 @@ if(strpos($route, '/login') !== false){
         }
 
         if(0 === count($errors)){
+
             $_SESSION['userId'] = (int)$userData['id'];
             moveCartProductsToAnotherUser($_COOKIE['userId'], (int)$userData['id']);
             setcookie('userId', $userId, strtotime('+30 days'),$baseUrl);
@@ -100,6 +101,18 @@ if(strpos($route, '/checkout') !== false) {
         header("Location: ".$baseUrl."index.php/login");
         exit();
     }
+    $recipient = "";
+    $street = "";
+    $streetNumber = "";
+    $city = "";
+    $zipCode = "";
+    $recipientIsValid = true;
+    $streetIsValid = true;
+    $streetNumberIsValid = true;
+    $cityIsValid = true;
+    $zipCodeIsValid = true;
+    $errors = [];
+    $hasErrors = count($errors) > 0;
     require __DIR__ . '/templates/selectDeliveryAddress.php';
     exit();
 }
@@ -162,6 +175,16 @@ if(strpos($route, '/deliveryAddress/add') !== false){
         if(false === (bool)$zipCode){
             $errors[] = "Bitte PLZ eintragen.";
             $zipCodeIsValid = false;
+        }
+        if(count($errors) === 0) {
+
+            $deliveryAddressId = saveDeliveryAddressForUser($userId, $recipient, $street, $streetNumber, $city, $zipCode);
+            if($deliveryAddressId > 0){
+                $_SESSION['deliveryAddressId'] = $deliveryAddressId;
+                header("Location: ".$baseUrl."index.php/selectPayment");
+                exit();
+            }
+            $errors[] = "Fehler beim Speichern der Lieferadresse.";
         }
     }
     $hasErrors = count($errors) > 0;
