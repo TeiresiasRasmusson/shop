@@ -7,7 +7,7 @@ require_once __DIR__.'/header.php';
 ?>
 
 <section class="container" id="products">
-    <div class="row">
+    <div class="row pb-5">
         <?php foreach($products as $product):?>
             <div class="col">
                 <?php include 'card.php' ?>
