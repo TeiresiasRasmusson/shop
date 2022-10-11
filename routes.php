@@ -113,6 +113,7 @@ if(strpos($route, '/checkout') !== false) {
     $zipCodeIsValid = true;
     $errors = [];
     $hasErrors = count($errors) > 0;
+    $deliveryAddresses = getDeliveryAddressesForUser($userId);
     require __DIR__ . '/templates/selectDeliveryAddress.php';
     exit();
 }
@@ -125,7 +126,27 @@ if(strpos($route, '/logout') !== false) {
     exit();
 }
 
+if(strpos($route, '/selectDeliveryAddress') !== false) {
+
+    if (!isLoggedIn()) {
+        $_SESSION['redirectTarget'] = $baseUrl . 'index.php/checkout';
+        header("Location: " . $baseUrl . "index.php/login");
+        exit();
+    }
+
+    $routeParts = explode('/', $route);
+    $deliveryAddressId = (int)$routeParts[2];
+    if(deliveryAddressBelongToUser($deliveryAddressId, $userId)){
+        $_SESSION['deliveryAddressId'] = $deliveryAddressId;
+        header("Location: ".$baseUrl."index.php/selectPayment");
+        exit();
+    }
+    header("Location: " . $baseUrl . "index.php/checkout");
+    exit();
+}
+
 if(strpos($route, '/deliveryAddress/add') !== false){
+
     if(false === isLoggedIn()){
         $_SESSION['redirectTarget'] = $baseUrl.'index.php/deliveryAddress/add';
         header("Location: ".$baseUrl."index.php/login");
@@ -143,6 +164,7 @@ if(strpos($route, '/deliveryAddress/add') !== false){
     $zipCodeIsValid = true;
     $isPost = isPost();
     $errors = [];
+    $deliveryAddresses = getDeliveryAddressesForUser($userId);
 
     if($isPost){
         $recipient = filter_input(INPUT_POST, 'recipient', FILTER_SANITIZE_SPECIAL_CHARS);
