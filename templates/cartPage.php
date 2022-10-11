@@ -10,7 +10,7 @@ require_once __DIR__ . '/header.php';
 ?>
 
 <section class="container" id="cartItems">
-    <div class="row">
+    <div class="row pb-5">
         <h2>Warenkorb</h2>
     </div>
     <div class="row cartItemHeader">
