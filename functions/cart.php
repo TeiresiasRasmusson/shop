@@ -50,18 +50,29 @@ function getCartItemsForUserId (int $userId): array{
     return $found;
 }
 
-function getCartSumForUserId (int $userId): int{
+function getCartSumForUserId (int $userId): array{
 
     $sql = "SELECT SUM(price * cart.quantity)
         FROM cart 
         JOIN products ON(cart.product_id = products.id)
-        WHERE user_id =".$userId;
-    $cartResults = getDB()->query($sql);
-    if($cartResults === false){
-        return 0;
+        WHERE user_id = :userId";
+
+    $statement = getDB()->prepare($sql);
+    if(false === $statement){
+        return [];
     }
 
-    return (int)$cartResults->fetchColumn();
+    $data = [
+        ':userId' => $userId
+    ];
+    $statement->execute($data);
+
+    $found = [];
+    while ($row = $statement->fetch()){
+        $found[] = $row;
+    }
+
+    return $found;
 }
 
 function deleteProductInCartForUserId (int $userId, int $productId): int {
