@@ -9,6 +9,7 @@ if(false !== $indexPHPPositionInUrl){
 if(substr($baseUrl, -1) !== '/'){
     $baseUrl .='/';
 }
+define('BASE_URL', $baseUrl);
 
 $route =  null;
 $_SESSION['redirectTarget'] = $baseUrl.'index.php';
@@ -96,11 +97,7 @@ if(strpos($route, '/login') !== false){
 
 if(strpos($route, '/checkout') !== false) {
 
-    if (!isLoggedIn()) {
-        $_SESSION['redirectTarget'] = $baseUrl.'index.php/checkout';
-        header("Location: ".$baseUrl."index.php/login");
-        exit();
-    }
+    redirectIfNotLoggedIn('/checkout');
     $recipient = "";
     $street = "";
     $streetNumber = "";
@@ -120,20 +117,20 @@ if(strpos($route, '/checkout') !== false) {
 
 if(strpos($route, '/logout') !== false) {
 
+    $redirectTarget = $baseUrl.'index.php';
+    if(isset($_SESSION['redirectTarget'])){
+        $redirectTarget = $_SESSION['redirectTarget'];
+    }
+
     session_regenerate_id(true);
     session_destroy();
-    header("Location: ".$_SESSION['redirectTarget']);
+    header("Location: ". $redirectTarget);
     exit();
 }
 
 if(strpos($route, '/selectDeliveryAddress') !== false) {
 
-    if (!isLoggedIn()) {
-        $_SESSION['redirectTarget'] = $baseUrl . 'index.php/checkout';
-        header("Location: " . $baseUrl . "index.php/login");
-        exit();
-    }
-
+    redirectIfNotLoggedIn('/checkout');
     $routeParts = explode('/', $route);
     $deliveryAddressId = (int)$routeParts[2];
     if(deliveryAddressBelongToUser($deliveryAddressId, $userId)){
@@ -147,11 +144,7 @@ if(strpos($route, '/selectDeliveryAddress') !== false) {
 
 if(strpos($route, '/deliveryAddress/add') !== false){
 
-    if(false === isLoggedIn()){
-        $_SESSION['redirectTarget'] = $baseUrl.'index.php/deliveryAddress/add';
-        header("Location: ".$baseUrl."index.php/login");
-        exit();
-    }
+    redirectIfNotLoggedIn('/deliveryAddress/add');
     $recipient = "";
     $street = "";
     $streetNumber = "";
@@ -215,4 +208,12 @@ if(strpos($route, '/deliveryAddress/add') !== false){
     exit();
 }
 
+if(strpos($route, '/selectPayment') !== false) {
+
+    redirectIfNotLoggedIn('/selectPayment');
+    require __DIR__.'/templates/selectPayment.php';
+    exit();
+}
+
 $_SESSION['redirectTarget'] = $baseUrl.'index.php/'.$route;
+
